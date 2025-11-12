@@ -12,7 +12,7 @@ export LC_ALL=C
 
 # Add common toolchain paths to PATH if not already present
 # This must happen BEFORE toolchain detection
-for toolchain_path in "$HOME/rv/toolchain/bin" "$HOME/riscv/toolchain/bin" "/opt/riscv/bin"; do
+for toolchain_path in "$HOME/riscv/toolchain/bin" "/opt/riscv/bin"; do
     if [ -d "$toolchain_path" ]; then
         export PATH="$toolchain_path:$PATH"
     fi

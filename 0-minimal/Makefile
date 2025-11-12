@@ -1,11 +1,6 @@
 # MyCPU is freely redistributable under the MIT License. See the file
 # LICENSE" for information on usage and redistribution of this file.
 
-# RISC-V toolchain (only needed for manual jit.asmbin rebuild)
-RISCV_PREFIX = $(HOME)/rv/toolchain/bin/riscv-none-elf-
-AS = $(RISCV_PREFIX)as
-OBJCOPY = $(RISCV_PREFIX)objcopy
-
 SRC_DIR = src/main/resources
 SIM_TIME ?= 1000000
 SIM_VCD ?= trace.vcd

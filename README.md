@@ -65,6 +65,7 @@ The designs target the 32-bit base integer ISA (RV32I) and run real test program
 - Chisel 3.6.1 with legacy FIRRTL compiler 1.6.0
 - Verilator 5.042 or newer
 - Optional: GNU RISC-V toolchain for assembling the C/asm test payloads
+  * Toolchain requirement: RISC-V GNU toolchain at `$HOME/riscv/toolchain/bin/` or set `CROSS_COMPILE` environment variable.
 
 ### Build System Architecture
 
