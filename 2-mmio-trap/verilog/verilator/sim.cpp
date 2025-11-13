@@ -14,7 +14,6 @@
 #include <SDL.h>
 #endif
 
-
 class Memory
 {
     std::vector<uint32_t> memory;
@@ -68,9 +67,8 @@ public:
     void load_binary(std::string const &filename, size_t load_address = 0x1000)
     {
         std::ifstream file(filename, std::ios::binary);
-        if (!file) {
+        if (!file)
             throw std::runtime_error("Could not open file " + filename);
-        }
         file.seekg(0, std::ios::end);
         size_t size = file.tellg();
         if (load_address + size > memory.size() * 4) {
@@ -111,12 +109,10 @@ public:
 
     uint32_t read(uint32_t offset) const
     {
-        if (offset == 0x4) {
+        if (offset == 0x4)
             return limit;
-        }
-        if (offset == 0x8) {
+        if (offset == 0x8)
             return enabled ? 1u : 0u;
-        }
         return 0;
     }
 };
@@ -153,12 +149,10 @@ public:
 
     uint32_t read(uint32_t offset) const
     {
-        if (offset == 0x4) {
+        if (offset == 0x4)
             return baudrate;
-        }
-        if (offset == 0xC) {
+        if (offset == 0xC)
             return last_rx;
-        }
         return 0;
     }
 };
@@ -262,9 +256,8 @@ public:
     void check_vsync(bool vsync)
     {
         // Vsync falling edge indicates frame complete
-        if (!vsync && prev_vsync) {
+        if (!vsync && prev_vsync)
             render();
-        }
         prev_vsync = vsync;
     }
 
@@ -274,13 +267,11 @@ public:
         // Handle SDL events
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
+            if (e.type == SDL_QUIT)
                 should_quit = true;
-            }
             // Support ESC key to quit as well
-            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
+            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
                 should_quit = true;
-            }
         }
 
         // Upload framebuffer to texture and display
@@ -314,9 +305,8 @@ public:
 
     void dump(vluint64_t time)
     {
-        if (tfp) {
+        if (tfp)
             tfp->dump(time);
-        }
     }
 
     ~VCDTracer()
@@ -332,9 +322,8 @@ uint32_t parse_number(std::string const &str)
 {
     if (str.size() > 2) {
         auto &&prefix = str.substr(0, 2);
-        if (prefix == "0x" || prefix == "0X") {
+        if (prefix == "0x" || prefix == "0X")
             return std::stoul(str.substr(2), nullptr, 16);
-        }
     }
     return std::stoul(str);
 }
@@ -365,24 +354,20 @@ public:
     void parse_args(std::vector<std::string> const &args)
     {
         auto it = std::find(args.begin(), args.end(), "-halt");
-        if (it != args.end()) {
+        if (it != args.end())
             halt_address = parse_number(*(it + 1));
-        }
 
         it = std::find(args.begin(), args.end(), "-memory");
-        if (it != args.end()) {
+        if (it != args.end())
             memory_words = std::stoull(*(it + 1));
-        }
 
         it = std::find(args.begin(), args.end(), "-time");
-        if (it != args.end()) {
+        if (it != args.end())
             max_sim_time = std::stoull(*(it + 1));
-        }
 
         it = std::find(args.begin(), args.end(), "-vcd");
-        if (it != args.end()) {
+        if (it != args.end())
             vcd_tracer->enable(*(it + 1), *top);
-        }
 
         it = std::find(args.begin(), args.end(), "-signature");
         if (it != args.end()) {
@@ -393,15 +378,13 @@ public:
         }
 
         it = std::find(args.begin(), args.end(), "-instruction");
-        if (it != args.end()) {
+        if (it != args.end())
             instruction_filename = *(it + 1);
-        }
 
 #ifdef ENABLE_SDL2
         it = std::find(args.begin(), args.end(), "-vga");
-        if (it != args.end()) {
+        if (it != args.end())
             enable_vga = true;
-        }
 #endif
     }
 
@@ -411,13 +394,11 @@ public:
     {
         parse_args(args);
         memory = std::make_unique<Memory>(memory_words);
-        if (!instruction_filename.empty()) {
+        if (!instruction_filename.empty())
             memory->load_binary(instruction_filename);
-        }
 #ifdef ENABLE_SDL2
-        if (enable_vga) {
+        if (enable_vga)
             vga_display = std::make_unique<VGADisplay>();
-        }
 #endif
     }
 
@@ -445,9 +426,8 @@ public:
                 top->clock = !top->clock;
                 counter = 0;
             }
-            if (main_time > 2) {
+            if (main_time > 2)
                 top->reset = 0;
-            }
             // top->io_mem_slave_read_data = memory_read_word;
             top->io_memory_bundle_read_data = data_memory_read_word;
             top->io_instruction = inst_memory_read_word;
@@ -524,9 +504,8 @@ public:
 #endif
 
             if (halt_address) {
-                if (memory->read(halt_address) == 0xBABECAFE) {
+                if (memory->read(halt_address) == 0xBABECAFE)
                     break;
-                }
             }
 
             // print simulation progress in percentage every 1%
@@ -549,17 +528,15 @@ public:
 
 #ifdef ENABLE_SDL2
         // Final render to display last frame
-        if (vga_display) {
+        if (vga_display)
             vga_display->render();
-        }
 #endif
     }
 
     ~Simulator()
     {
-        if (top) {
+        if (top)
             top->final();
-        }
     }
 };
 
