@@ -291,10 +291,10 @@ class InstructionDecode extends Module {
   // TODO: Complete B-type immediate extension
   val immB = Cat(
     Fill(Parameters.DataBits - 13, instruction(31)), // Sign extension
-    instruction(12),                                  // bit [12]
-    instruction(11),                                  // bit [11]
-    instruction(10, 5),                               // bits [10:5]
-    instruction(4, 1),                                // bits [4:1]
+    instruction(31),                                  // bit [12]
+    instruction(7),                                  // bit [11]
+    instruction(30, 25),                               // bits [10:5]
+    instruction(11, 8),                                // bits [4:1]
     0.U(1.W)                                          // bit [0] = 0 (alignment)
   )
 
@@ -313,10 +313,10 @@ class InstructionDecode extends Module {
   // TODO: Complete J-type immediate extension
   val immJ = Cat(
     Fill(Parameters.DataBits - 21, instruction(31)),  // Sign extension
-    instruction(20),                                  // bit [20]
+    instruction(31),                                  // bit [20]
     instruction(19, 12),                              // bits [19:12]
-    instruction(11),                                  // bit [11]
-    instruction(10, 1),                               // bits [10:1]
+    instruction(20),                                  // bit [11]
+    instruction(30, 21),                               // bits [10:1]
     0.U(1.W)                                          // bit [0] = 0 (alignment)
   )
 
