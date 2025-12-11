@@ -27,7 +27,10 @@ BINS = \
 	quicksort.asmbin \
 	sb.asmbin \
 	uart.asmbin \
-	irqtrap.asmbin
+	irqtrap.asmbin \
+	fast_rsqrt.asmbin \
+	fast_rsqrt_base.asmbin \
+	fast_rsqrt_opt.asmbin
 
 # Clear the .DEFAULT_GOAL special variable, so that the following turns
 # to the first target after .DEFAULT_GOAL is not set.
