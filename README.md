@@ -1,4 +1,4 @@
-# The Full Version of Revise in [CA25-Assignment 3: Running My Own RISC-V](https://hackmd.io/@zhian66/ca25-homework3)
+# [CA25-Assignment 3: Running My Own RISC-V](https://hackmd.io/@zhian66/ca25-homework3)
 
 ## What I've Done
 
