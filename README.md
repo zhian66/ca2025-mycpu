@@ -1,4 +1,64 @@
+# The Full Version of Revise in [CA25-Assignment 3: Running My Own RISC-V](https://hackmd.io/@zhian66/ca25-homework3)
+
+## What I've Done
+
+This section summarizes my implementation journey through this project, serving as a reference for understanding what was accomplished at each stage.
+
+### Project 0: Minimal CPU Analysis
+
+- **Goal:** Understand the minimal viable CPU design
+- **What I Did:** Analyzed how 5 instructions (AUIPC, ADDI, LW, SW, JALR) form the foundation for JIT compilation
+- **Key Insight:** Harvard architecture (separate instruction/data memory) enables safe self-modifying code by allowing writes to instruction memory through the data path
+
+### Project 1: Single-Cycle CPU
+
+- **Goal:** Implement a complete RV32I instruction set
+- **What I Did:**
+  - Built a 5-stage datapath (IF → ID → EX → MEM → WB) executing in a single cycle
+  - Implemented all 47 RV32I instructions
+  - Passed 41 RISCOF compliance tests
+- **Key Files:** `1-single-cycle/src/main/scala/riscv/core/`
+- **Debugging Experience:** Tracked down B-type immediate encoding bug by manually decoding instruction bits (see [RISC-V Immediate Encoding Design](#RISC-V-Immediate-Encoding-Design))
+
+### Project 2: MMIO and Trap Handling
+
+- **Goal:** Enable CPU interaction with external peripherals
+- **What I Did:**
+  - Implemented CSR module with mstatus, mepc, mcause, mtvec registers
+  - Built CLINT (Core Local Interruptor) for timer interrupt handling
+  - Created VGA peripheral for Nyancat animation demo
+- **Test Results:** 119/119 RISCOF tests passed
+- **Key Understanding:** The mstatus.MIE/MPIE mechanism provides a "save point" for nested interrupt protection—MPIE preserves the previous interrupt enable state during trap entry
+
+### Project 3: Pipelined CPU
+
+- **Goal:** Build a high-performance 5-stage pipelined CPU
+- **What I Did:** Implemented 4 progressive pipeline variants:
+
+| Variant | Forwarding | Branch Resolution | Key Characteristic |
+|---------|------------|-------------------|-------------------|
+| ThreeStage | None | EX stage | Baseline, validates concept |
+| FiveStageStall | None | EX stage | Conservative stalling on all hazards |
+| FiveStageForward | EX-only | EX stage | Data forwarding reduces stalls |
+| FiveStageFinal | ID+EX | ID stage | Optimized: 1-cycle branch penalty |
+
+- **Hazard Analysis:** Completed 5 hazard detection Q&A with waveform analysis
+
+### Homework 2 Integration
+
+- **Goal:** Port handwritten assembly to pipeline CPU and optimize
+- **Optimization Strategies:**
+  1. Load-Use hazard elimination (minimal effect: ~6 cycles)
+  2. 4x Loop Unrolling (significant: ~26% improvement)
+  3. ID-stage branch condition pre-computation (targeting FiveStageFinal)
+- **Final Result:** FiveStageFinal achieved 4024 cycles, becoming the fastest variant
+- **Key Learning:** Amdahl's Law in practice—optimizing the hot path (mul32 loop) matters far more than optimizing infrequent operations (table lookup)
+
+
+---
+
 # RISC-V CPU Labs in Chisel
+
 
 > [!NOTE]
 > Code fragments marked `CA25: Exercise` are intentionally incomplete lab exercises.
