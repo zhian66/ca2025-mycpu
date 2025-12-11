@@ -24,13 +24,15 @@ OBJCOPY := $(CROSS_COMPILE)objcopy
 BINS = \
 	fibonacci.asmbin \
 	hazard.asmbin \
+	hazard_extended.asmbin \
 	quicksort.asmbin \
 	sb.asmbin \
 	uart.asmbin \
 	irqtrap.asmbin \
 	fast_rsqrt.asmbin \
 	fast_rsqrt_base.asmbin \
-	fast_rsqrt_opt.asmbin
+	fast_rsqrt_opt.asmbin \
+	fast_rsqrt_final.asmbin
 
 # Clear the .DEFAULT_GOAL special variable, so that the following turns
 # to the first target after .DEFAULT_GOAL is not set.

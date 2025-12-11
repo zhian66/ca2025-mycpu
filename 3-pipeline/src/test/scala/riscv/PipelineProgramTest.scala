@@ -241,6 +241,42 @@ class PipelineProgramTest extends AnyFlatSpec with ChiselScalatestTester {
       }
     }
 
+    it should "calculate fast inverse square root (final asm - FiveStageFinal optimized)" in {
+      runProgram("fast_rsqrt_final.asmbin", cfg) { c =>
+        // Execute enough clock cycles for final assembly version
+        for (i <- 1 to 100) {
+          c.clock.step(1000)
+          c.io.mem_debug_read_address.poke((i * 4).U)
+        }
+
+        // Verify mul32 test result: mul32(65536, 6700) == 439091200
+        c.io.mem_debug_read_address.poke(4.U)
+        c.clock.step()
+        c.io.mem_debug_read_data.expect(1.U, "final: mul32(65536, 6700) should equal 439091200")
+
+        // Verify fast_rsqrt(65535) = 226
+        c.io.mem_debug_read_address.poke(8.U)
+        c.clock.step()
+        c.io.mem_debug_read_data.expect(226.U, "final: fast_rsqrt(65535) should be 226")
+
+        // Verify fast_rsqrt(1) = 65536
+        c.io.mem_debug_read_address.poke(12.U)
+        c.clock.step()
+        c.io.mem_debug_read_data.expect(65536.U, "final: fast_rsqrt(1) should be 65536")
+
+        // Verify fast_rsqrt(4) = 32768
+        c.io.mem_debug_read_address.poke(16.U)
+        c.clock.step()
+        c.io.mem_debug_read_data.expect(32768.U, "final: fast_rsqrt(4) should be 32768")
+
+        // Read and report cycle count
+        c.io.mem_debug_read_address.poke(20.U)
+        c.clock.step()
+        val cycles = c.io.mem_debug_read_data.peek().litValue
+        println(s"[${cfg.name}] fast_rsqrt FINAL (ID-branch optimized) cycle count: $cycles")
+      }
+    }
+
     it should "handle machine-mode traps" in {
       runProgram("irqtrap.asmbin", cfg) { c =>
         c.clock.setTimeout(0)
